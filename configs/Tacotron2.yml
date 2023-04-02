@@ -1,0 +1,96 @@
+# 模型配置参数
+model_conf:
+  n_symbols: 441
+  symbols_embedding_dim: 512
+
+  # encoder参数
+  encoder_kernel_size: 5
+  encoder_n_convolutions: 3
+  encoder_embedding_dim: 512
+
+  # decoder参数
+  n_frames_per_step: 3
+  n_mel_channels: 80
+  decoder_rnn_dim: 1024
+  prenet_dim: 256
+  max_decoder_steps: 1000  # TODO: default=1000
+  gate_threshold: 0.5
+  p_attention_dropout: 0.1
+  p_decoder_dropout: 0.1
+  
+  # Attention parameters
+  attention_rnn_dim: 1024
+  attention_dim: 128
+
+  # Location Layer parameters
+  attention_location_n_filters: 32
+  attention_location_kernel_size: 31
+
+  # Mel-post processing network parameters
+  postnet_embedding_dim: 512
+  postnet_kernel_size: 5
+  postnet_n_convolutions: 5
+
+# 数据集参数
+dataset_conf:
+  # 训练数据的数据列表路径
+  train_manifest: 'data/train.txt'
+  # 梅尔谱文件夹路径
+  mel_manifest_dir: 'data/mel_features'
+  # 字典文件路径
+  vocab_path: 'data/vocab'
+
+# 预处理参数
+preprocess_conf:
+  # sampling_rate
+  fs: 48000
+  # fft点数
+  n_fft: 4096
+  # 滑动窗口大小 fs * 0.0125
+  hop_length: 600
+  # 每一帧窗口大小 fs * 0.05
+  win_length: 2400
+  # 梅尔滤波器个数
+  n_mel_channels: 80
+  # 梅尔谱频率最小值
+  fmin: 0.0
+  # 梅尔谱频率最大值 fs / 2
+  fmax: 24000.0
+
+# 优化方法参数配置
+optimizer_conf:
+  # 优化方法，支持Adam、AdamW
+  optimizer: 'Adam'
+  # 权重衰减系数
+  weight_decay: 1.e-6
+  # 初始学习率的大小
+  learning_rate: 1e-3
+  # 学习率衰减方法，支持WarmupLR、NoamHoldAnnealing
+  scheduler: 'WarmupLR'
+  # 学习率衰减方法参数配置
+  scheduler_conf:
+    # 学习率预热步数，对应的是step/accum_grad
+    warmup_steps: 12000
+    # 最小学习率
+    min_lr: 1.e-5
+
+# 训练参数配置
+train_conf:
+  # 训练的批量大小
+  batch_size: 32
+  # 读取数据的线程数量
+  num_workers: 8
+  # 缓存的 mini-batch 的个数
+  prefetch_factor: 4
+  # 是否开启自动混合精度
+  enable_amp: False
+  # 梯度裁剪
+  grad_clip: 1.0
+  # 梯度累加，变相扩大batch_size的作用
+  accum_grad: 1
+  # 训练的轮数
+  max_epoch: 400
+  # 多少batch打印一次日志
+  log_interval: 100
+
+use_model: 'Tacotron2'
